@@ -1,0 +1,141 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace VSP_46455r_5
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnBold_Click(object sender, EventArgs e)
+        {
+            Font oldFont, newFont;
+            oldFont = this.rtbText.SelectionFont;
+            if (oldFont.Bold)
+            {
+                newFont = new Font(oldFont, oldFont.Style & ~FontStyle.Bold);
+            }
+            else
+            {
+                newFont = new Font(oldFont, oldFont.Style | FontStyle.Bold);
+            }
+            this.rtbText.SelectionFont = newFont;
+            this.rtbText.Focus();
+        }
+
+        private void btnUnder_Click(object sender, EventArgs e)
+        {
+            Font oldFont, newFont;
+            oldFont = this.rtbText.SelectionFont;
+            if (oldFont.Underline)
+            {
+                newFont = new Font(oldFont, oldFont.Style & ~FontStyle.Underline);
+            }
+            else
+            {
+                newFont = new Font(oldFont, oldFont.Style | FontStyle.Underline);
+            }
+            this.rtbText.SelectionFont = newFont;
+            this.rtbText.Focus();
+        }
+
+        private void btnItalic_Click(object sender, EventArgs e)
+        {
+            Font oldFont, newFont;
+            oldFont = this.rtbText.SelectionFont;
+            if (oldFont.Italic)
+            {
+                newFont = new Font(oldFont, oldFont.Style & ~FontStyle.Italic);
+            }
+            else
+            {
+                newFont = new Font(oldFont, oldFont.Style | FontStyle.Italic);
+            }
+            this.rtbText.SelectionFont = newFont;
+            this.rtbText.Focus();
+        }
+
+        private void btnCenter_Click(object sender, EventArgs e)
+        {
+            if(this.rtbText.SelectionAlignment == HorizontalAlignment.Center)
+            {
+                this.rtbText.SelectionAlignment = HorizontalAlignment.Left;
+            }
+            else
+            {
+                this.rtbText.SelectionAlignment = HorizontalAlignment.Center;
+                this.rtbText.Focus();
+            }
+        }
+        private void tbSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            const int MinSize=8;
+            if ((e.KeyChar < 48 || e.KeyChar > 57) && e.KeyChar != 8 && e.KeyChar !=13)
+            {
+                e.Handled = true;
+            }
+            else if (e.KeyChar == 13)
+            {
+                TextBox txt = (TextBox)sender;
+                if (Convert.ToInt16(txt.Text) < MinSize)
+                {
+                    txt.Text = Convert.ToString(MinSize);
+                }
+                ApplyTextSize(txt.Text);
+                e. Handled = true;
+                this.rtbText.Focus();
+            }
+
+        }
+        private void ApplyTextSize(string textSize)
+        {
+            float newSize = Convert.ToSingle(textSize);
+            FontFamily currentFontFamily;
+            Font newFont;
+            currentFontFamily = this.rtbText.SelectionFont.FontFamily;
+            newFont = new Font(currentFontFamily, newSize);
+            this.rtbText.SelectionFont = newFont;
+        }
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                rtbText.SaveFile(MyFile);
+                MessageBox.Show("Файлът " + MyFile + "е зареден успешно");
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                MessageBox.Show("Файлът не е намерен " + MyFile);
+            }
+        }
+
+        private void rtbText_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                rtbText.SaveFile(MyFile);
+                MessageBox.Show("Файлът " + MyFile + "е съхранен успешно");
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message);
+            }
+        }
+    }
+}
